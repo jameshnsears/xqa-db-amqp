@@ -1,7 +1,41 @@
 version: '3'
 
 services:
-  xqa-ingest-balancer:
+  xqa-message-broker:
+    image: jameshnsears/xqa-message-broker:latest
+    container_name: xqa-message-broker
+    ports:
+      - "5672:5672"
+      - "8161:8161"
+    volumes:
+      - "xqa-message-broker:/opt/apache-activemq-5.15.7/data"
+    networks:
+      - xqa
+
+  xqa-db:
+    image: jameshnsears/xqa-db:latest
+    container_name: xqa-db
+    volumes:
+      - "xqa-db:/var/lib/postgresql"
+    ports:
+      - "5432:5432"
+    networks:
+      - xqa
+
+  xqa-db-amqp:
     build: .
-    image: "xqa-db-rest"
-    network_mode: "host"
+    image: "xqa-db-amqp"
+    container_name: xqa-db-amqp
+    command: ["-message_broker_host", "xqa-message-broker", "-storage_host", "xqa-db"]
+    networks:
+      - xqa
+    depends_on:
+      - xqa-db
+      - xqa-message-broker
+
+volumes:
+  xqa-db:
+  xqa-message-broker:
+
+networks:
+  xqa:

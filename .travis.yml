@@ -1,5 +1,3 @@
-language: java
-
 sudo: required
 
 notifications:
@@ -8,16 +6,26 @@ email: james.hn.sears@gmail.com
 services:
   - docker
 
-jdk:
-  - oraclejdk8
+language: python
 
-cache:
-  directories:
-  - $HOME/.m2
+git:
+  depth: false
+
+python:
+  - "3.6"
+
+before_script:
+  - sudo service postgresql stop
+  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+
+  - docker-compose pull xqa-db xqa-message-broker
+
+  - pip install -r requirements.txt
+  - flake8 src test
 
 script:
-  - mvn clean test
-  - mvn package -DskipTests
+  - export PYTHONPATH=src:$PYTHONPATH
+  - pytest -s --cov-report term-missing --cov=. test
 
 after_success:
-  - mvn jacoco:report coveralls:report
+  - COVERALLS_REPO_TOKEN=269eiDDGHn9bTSA7N4Fa7aSBlIaS4AePQ coveralls
