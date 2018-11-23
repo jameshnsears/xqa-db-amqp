@@ -36,19 +36,19 @@ class DbAmqp(XqaMessagingHandler):
         self.container = event.reactor
 
         self.queue_db_amqp_insert = event.container.create_receiver(connection,
-                                                                    configuration.message_broker_queue_db_amqp_insert_event)
+                                                                    configuration.message_broker_db_amqp_insert_event_queue)
 
         self.cmd_stop_receiver = event.container.create_receiver(connection,
-                                                                 configuration.message_broker_topic_cmd_stop)
+                                                                 configuration.message_broker_cmd_stop_topic)
 
         logging.info('connected to %s:%d' % (configuration.message_broker_host, configuration.message_broker_port_amqp))
 
     def on_message(self, event):
-        if configuration.message_broker_queue_db_amqp_insert_event in event.message.address:
+        if configuration.message_broker_db_amqp_insert_event_queue in event.message.address:
             self._insert_event_into_storage(event)
             return
 
-        if configuration.message_broker_topic_cmd_stop in event.message.address:
+        if configuration.message_broker_cmd_stop_topic in event.message.address:
             self._cmd_stop(event)
             return
 

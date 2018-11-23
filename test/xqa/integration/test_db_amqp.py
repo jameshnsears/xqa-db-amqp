@@ -41,11 +41,11 @@ class DbAmqpTest(XqaMessagingHandler):
         self.container = event.reactor
 
         self.insert_event_sender = event.container.create_sender(connection,
-                                                                 configuration.message_broker_queue_db_amqp_insert_event)
+                                                                 configuration.message_broker_db_amqp_insert_event_queue)
 
-        self.cmd_stop_sender = event.container.create_sender(connection, configuration.message_broker_topic_cmd_stop)
+        self.cmd_stop_sender = event.container.create_sender(connection, configuration.message_broker_cmd_stop_topic)
         self.cmd_stop_receiver = event.container.create_receiver(connection,
-                                                                 configuration.message_broker_topic_cmd_stop)
+                                                                 configuration.message_broker_cmd_stop_topic)
 
         self.container.schedule(1, self)
 
@@ -62,7 +62,7 @@ class DbAmqpTest(XqaMessagingHandler):
         self.container.schedule(1, self)
 
     def _send_insert_event(self):
-        message = Message(address=configuration.message_broker_queue_db_amqp_insert_event,
+        message = Message(address=configuration.message_broker_db_amqp_insert_event_queue,
                           correlation_id=str(uuid4()),
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           body=self._json.encode('utf-8'))
@@ -97,11 +97,11 @@ class DbAmqpTest(XqaMessagingHandler):
                      event.message.expiry_time,
                      event.message.body)
 
-        if configuration.message_broker_topic_cmd_stop in event.message.address:
+        if configuration.message_broker_cmd_stop_topic in event.message.address:
             self._cmd_stop(event)
 
     def _send_cmd_stop(self):
-        message = Message(address=configuration.message_broker_topic_cmd_stop,
+        message = Message(address=configuration.message_broker_cmd_stop_topic,
                           correlation_id=str(uuid4()),
                           creation_time=XqaMessagingHandler.now_timestamp_seconds())
 
@@ -124,13 +124,13 @@ def dockerpy():
              'network': 'xqa'},
             {'image': 'jameshnsears/xqa-message-broker:latest',
              'name': 'xqa-message-broker',
-             'ports': {'%d/tcp' % configuration.message_broker_port_amqp: configuration.message_broker_port_amqp},
-             'ports': {'8161/tcp': 8161},
+             'ports': {'%d/tcp' % configuration.message_broker_port_amqp: configuration.message_broker_port_amqp,
+                       '8161/tcp': 8161},
              'network': 'xqa'},
             ]
 
 
-@pytest.mark.timeout(120)
+# @pytest.mark.timeout(120)
 def test_db_amqp(dockerpy):
     subprocess.Popen([
         'python3',
