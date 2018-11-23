@@ -5,8 +5,8 @@ message_broker_host = '0.0.0.0'
 message_broker_port_amqp = 5672
 message_broker_user = 'admin'
 message_broker_password = 'admin'
-message_broker_queue_db_amqp_insert_event = 'queue://xqa.event'
-message_broker_topic_cmd_stop = 'topic://xqa.cmd.stop'
+message_broker_cmd_stop_topic = 'topic://xqa.cmd.stop'
+message_broker_db_amqp_insert_event_queue = 'queue://xqa.event'
 
 storage_host = '0.0.0.0'
 storage_port = 5432
