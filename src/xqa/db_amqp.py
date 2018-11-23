@@ -93,4 +93,4 @@ if __name__ == '__main__':
         Container(DbAmqp()).run()
     except (psycopg2.OperationalError, ConnectionException, KeyboardInterrupt) as exception:
         logging.error(exception)
-        # exit(-1)
+        exit(-1)
