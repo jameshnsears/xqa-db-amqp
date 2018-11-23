@@ -125,6 +125,7 @@ def dockerpy():
             {'image': 'jameshnsears/xqa-message-broker:latest',
              'name': 'xqa-message-broker',
              'ports': {'%d/tcp' % configuration.message_broker_port_amqp: configuration.message_broker_port_amqp},
+             'ports': {'8161/tcp': 8161},
              'network': 'xqa'},
             ]
 
