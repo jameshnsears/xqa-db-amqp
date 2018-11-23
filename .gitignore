@@ -1,12 +1,8 @@
-build
-.cache/
 .coverage
-coverage/
+build
 dist
 *.egg-info/
 /.idea/
-__pycache__/
-.pydevproject
 /.pytest_cache/
+/.vscode/
 /venv*/
-.vscode/
