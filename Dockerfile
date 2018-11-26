@@ -22,6 +22,6 @@ WORKDIR ${OPTDIR}${XQA}
 
 RUN pip3 install -r requirements.txt
 
-ENV PYTHONPATH=${OPTDIR}/${XQA}
+ENV PYTHONPATH=${OPTDIR}${XQA}
 
 ENTRYPOINT ["python3", "xqa/db_amqp.py"]
