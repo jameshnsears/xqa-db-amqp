@@ -13,7 +13,7 @@ storage_port = 5432
 storage_user = 'xqa'
 storage_password = 'xqa'
 storage_database_name = 'xqa'
-storage_retry_attempts = 5 
+storage_retry_attempts = 5
 
 logging.basicConfig(stream=sys.stdout,
                     level=logging.DEBUG,
