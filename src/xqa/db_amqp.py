@@ -2,8 +2,6 @@ import argparse
 import logging
 from uuid import uuid4
 
-import psycopg2
-from proton import ConnectionException
 from proton.handlers import MessagingHandler
 from proton.reactor import Container
 
@@ -13,23 +11,29 @@ from xqa.storage.storage_service import StorageService
 
 
 class DbAmqp(XqaMessagingHandler):
-    def __init__(self):
+    def __init__(self,
+                 message_broker_host=configuration.message_broker_host,
+                 storage_host=configuration.storage_host,
+                 storage_port=configuration.storage_port):
         XqaMessagingHandler.__init__(self)
         MessagingHandler.__init__(self)
+
+        self._message_broker_host = message_broker_host
         self._stopping = False
         self._service_id = str(uuid4()).split('-')[0]
 
         logging.info('%s/%s' % (self.__class__.__name__.lower(), self._service_id))
-        logging.debug('-message_broker_host=%s' % configuration.message_broker_host)
-        logging.debug('-storage_host=%s' % configuration.storage_host)
-        logging.debug('-storage_port=%s' % configuration.storage_port)
+        logging.debug('-message_broker_host=%s' % message_broker_host)
+        logging.debug('-storage_host=%s' % storage_host)
+        logging.debug('-storage_port=%s' % storage_port)
 
-        self._storage_service = StorageService(port=configuration.storage_port)
+        self._storage_service = StorageService(host=storage_host,
+                                               port=storage_port)
 
     def on_start(self, event):
         message_broker_url = 'amqp://%s:%s@%s:%s/' % (configuration.message_broker_user,
                                                       configuration.message_broker_password,
-                                                      configuration.message_broker_host,
+                                                      self._message_broker_host,
                                                       configuration.message_broker_port_amqp)
 
         connection = event.container.connect(message_broker_url, reconnect=XqaMessagingHandler.XqaBackoff())
@@ -77,20 +81,19 @@ class DbAmqp(XqaMessagingHandler):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-message_broker_host', '--message_broker_host', required=True,
-                        help='i.e. xqa-message-broker')
-    parser.add_argument('-storage_host', '--storage_host', required=True,
-                        help='i.e. xqa-db')
-    parser.add_argument('-storage_port', '--storage_port', required=True,
-                        help='i.e. 5432')
-    args = parser.parse_args()
-    configuration.message_broker_host = args.message_broker_host
-    configuration.storage_host = args.storage_host
-    configuration.storage_port = args.storage_port
-
     try:
-        Container(DbAmqp()).run()
-    except (psycopg2.OperationalError, ConnectionException, KeyboardInterrupt) as exception:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-message_broker_host', '--message_broker_host', required=True,
+                            help='i.e. xqa-message-broker')
+        parser.add_argument('-storage_host', '--storage_host', required=True,
+                            help='i.e. xqa-db')
+        parser.add_argument('-storage_port', '--storage_port', required=True,
+                            help='i.e. 5432')
+        args = parser.parse_args()
+
+        Container(DbAmqp(message_broker_host=args.message_broker_host,
+                         storage_host=args.storage_host,
+                         storage_port=args.storage_port)).run()
+    except Exception as exception:
         logging.error(exception)
         exit(-1)
