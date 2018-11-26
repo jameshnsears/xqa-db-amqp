@@ -5,10 +5,10 @@ services:
     image: jameshnsears/xqa-message-broker:latest
     container_name: xqa-message-broker
     ports:
-      - "5672:5672"
-      - "8161:8161"
+      - '5672:5672'
+      - '8161:8161'
     volumes:
-      - "xqa-message-broker:/opt/apache-activemq-5.15.7/data"
+      - 'xqa-message-broker:/opt/apache-activemq-5.15.7/data'
     networks:
       - xqa
 
@@ -16,17 +16,17 @@ services:
     image: jameshnsears/xqa-db:latest
     container_name: xqa-db
     volumes:
-      - "xqa-db:/var/lib/postgresql"
+      - 'xqa-db:/var/lib/postgresql'
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
       - xqa
 
   xqa-db-amqp:
     build: .
-    image: "xqa-db-amqp"
+    image: 'xqa-db-amqp'
     container_name: xqa-db-amqp
-    command: ["-message_broker_host", "xqa-message-broker", "-storage_host", "xqa-db"]
+    command: ['-message_broker_host', 'xqa-message-broker', '-storage_host', 'xqa-db', '-storage_port', '5432']
     networks:
       - xqa
     depends_on:

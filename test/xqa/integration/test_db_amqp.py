@@ -130,7 +130,7 @@ def dockerpy():
             ]
 
 
-# @pytest.mark.timeout(120)
+@pytest.mark.timeout(60)
 def test_db_amqp(dockerpy):
     subprocess.Popen([
         'python3',
