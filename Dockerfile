@@ -1,17 +1,17 @@
 FROM ubuntu:bionic
 
-MAINTAINER james.hn.sears@gmail.com
-
-RUN apt-get -qq update
+RUN apt-get -qq update \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 ARG OPTDIR=/opt/
 ARG XQA=xqa-db-amqp
 
 RUN mkdir ${OPTDIR}/${XQA}
 COPY src ${OPTDIR}/${XQA}
-ADD requirements.txt ${OPTDIR}/${XQA}
+COPY requirements.txt ${OPTDIR}/${XQA}
 
-RUN apt-get -qq install -y python3-pip python3-dev
+RUN apt-get -qq install -y --no-install-recommends python3-pip python3-dev
 
 RUN useradd -r -M -d ${OPTDIR}${XQA} xqa
 RUN chown -R xqa:xqa ${OPTDIR}${XQA}
