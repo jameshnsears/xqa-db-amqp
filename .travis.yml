@@ -7,6 +7,8 @@ env:
   global:
     # travis encrypt COVERALLS_REPO_TOKEN=...
     - secure: "fudt1G0sn6HoSKIEPXPOSd/XSPGdyBJG7POEaxTKEzQB9Of2qo02budlIcmFJphBixVOg6F3zjH76OCEPXw6aKjtea70CKjBip/2I6741uXyOdHw/XfzVJVULdPOXHWnEXXDGrJ88d6MiUMpA8685d1SsTp+Xoq/1iFb0QiSeHCy4NBLohgR26lITWXMnKbfv2rIG8umC6GGthchZwlmFGDu+h4D9k99K7YdZwPn/ago8WHEMBBPLRZDav0rXhhAru+EYprjLyaEKxHGQN+fMaMIPg6UzWCXsEoE6yh6nLQEjO29Jsf6mjWUMBJTIu6N8/E7KRRyefqNadGsunG59S0I3XgoOapxT67IOznC6iQZxBHQaXcA16Yf/QxJLuKprdngQQhyu0t1/r1//XQz7T3r3HuqsvgBXiSdkEfatwSLbraUfK0KvwCVYOs3Vjpb2LZb/AwEL/ZIsjdZbdA72ii+tlJy8acz83rDBuqk+UEMcZ3WKKbVl5WN8I7ZqRDIALZRJZiTxbB7RLt+olcCAR+fM6t0QBlWTK6IHrRPwQZKJLnB79kzYLZq3RqlECNo4vpDWRPvB8qMnLj5xQOXGqy1cKuI0u1Yr8YIrt6WsthykWfyDmL43i0fXocswEQvrciowjDsXr/9QwkvmDDEVFarISigUrr0Ii3uqAuA0Io="
+    # travis encrypt CODACY_PROJECT_TOKEN=...
+    - secure: "sWquzCbXc6wkTcwnlrss9PxHKI9i280TbDI1HpcQe31oOF+TY/3i9VTRx2xaRvpaiYpbhmC8x3enzWFDY2IChRDwQ8oUItND9BGZ2qcm3kRpgFz5EZ9fvkfJBjMaCrpLg3QjibuRun/jcbC8vQkkO7CrZDDVk/umG7PGojsW2s2jRixBy1D/Dzjs6HVvamvyAP8lgsLq2gRYA3rbaw0EBkBlGzqklyY7mB95mRAbIeSBuCtEtfDDi4npmIy91ggroje1SapDWA/enBUtRmhI4zNBtXiJpb712UpYTGkYGv2HTF26GZ7HirTxvYQw5GiuO6tPHTmkZp185Wxc1FVdXZxOHIxmAJizdOrwIxS/CO8t8IDxmiPaFJrGuYH8wJSaNnH9iFAeWvexZFShtz3u34SrW/AzmsXq/akBCbxA31JBdq/XyVtW6Hcm2GWMR6kdERko3r101td+b/gNcev6767VJzIdGAY0xI+D/xw+hTdxnalEhKiUYOAR3DMe1UBMWct1pwGoER4bf5TL37NIqvtXGXMZm5vdATl60ELa32I/+YMBnDIYA8eXlt1Yw5jPOTtfEW8G4P0oJrzadCNvSGs6jH2bCoVaeHeBlxFhbIAeXg+6iJsxMtVh463hpgy29gHX5F8zOJTv3PgFcWVUxh6pEI9US+Eh5PYeI4tMpak="
 
 addons:
   sonarcloud:
@@ -46,5 +48,10 @@ script:
   - coverage xml -i
 
 after_success:
+  - python-codacy-coverage -r coverage.xml
   - coveralls
   - sonar-scanner
+
+after_failure:
+  - docker images
+  - docker ps -a
