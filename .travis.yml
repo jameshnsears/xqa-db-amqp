@@ -3,11 +3,19 @@ sudo: required
 notifications:
 email: james.hn.sears@gmail.com
 
+env:
+  global:
+    # travis encrypt COVERALLS_REPO_TOKEN=...
+    - secure: "fudt1G0sn6HoSKIEPXPOSd/XSPGdyBJG7POEaxTKEzQB9Of2qo02budlIcmFJphBixVOg6F3zjH76OCEPXw6aKjtea70CKjBip/2I6741uXyOdHw/XfzVJVULdPOXHWnEXXDGrJ88d6MiUMpA8685d1SsTp+Xoq/1iFb0QiSeHCy4NBLohgR26lITWXMnKbfv2rIG8umC6GGthchZwlmFGDu+h4D9k99K7YdZwPn/ago8WHEMBBPLRZDav0rXhhAru+EYprjLyaEKxHGQN+fMaMIPg6UzWCXsEoE6yh6nLQEjO29Jsf6mjWUMBJTIu6N8/E7KRRyefqNadGsunG59S0I3XgoOapxT67IOznC6iQZxBHQaXcA16Yf/QxJLuKprdngQQhyu0t1/r1//XQz7T3r3HuqsvgBXiSdkEfatwSLbraUfK0KvwCVYOs3Vjpb2LZb/AwEL/ZIsjdZbdA72ii+tlJy8acz83rDBuqk+UEMcZ3WKKbVl5WN8I7ZqRDIALZRJZiTxbB7RLt+olcCAR+fM6t0QBlWTK6IHrRPwQZKJLnB79kzYLZq3RqlECNo4vpDWRPvB8qMnLj5xQOXGqy1cKuI0u1Yr8YIrt6WsthykWfyDmL43i0fXocswEQvrciowjDsXr/9QwkvmDDEVFarISigUrr0Ii3uqAuA0Io="
+
 addons:
   sonarcloud:
     organization: "jameshnsears-github"
     token:
       secure: "Ga2v1KU0kr5BbVq+beZdNsssk8mfAIEoDjkpMTpDCY5vrg6OAhxrsal6EZPmN/D0KTLv7E+3uQvEaT/DwXx0MSPAcBAHjRyCd4l57k4qiXP/vEpClJ5NUY+risUl7NsthsmISmlA0HEU4v3FSBUENUPrtCT/lJi/01SLjxEQ2tXGLZpVET/Ggw/2C6zTFSwiegnST5jPj12lCeew50N8nnRUdH/9Pmm6elTbmQAvzadwDM0wkyOVD93kOKPUIvJ06pNbmfpIEJO4bvRarw6tTjeCiqX+228fCpwMswDxrqFps//sksMGaNmiBjiiyR7n9yVXHjulzgz+b0YtxbFlMjtLf+fv2fSXf25HA96hQNWa8OHbH2gWnKC6PY2gU351Fy254pBYe4ZzeNq/AwuDFWSQL4HbQQ7Slm3nadhbjo11rw1Igpdm2nHI8C4TFTDcNAM0jb5qX/QZtPeKqRiJJFB4kckIkQaOMI3KnPGArAeBgrQ4TTEm23fS4zkIyoNsYslPD8aupbn8Wr8ThhDXaX0qFBoz88joDXnrHEN3bCp+xEKxs47xNDnpZzsZVHloLQA+zckCIm5YLGScs3XiRfadVDHDoshBjXQXONUJS86Dpz7/WYPEdy7R9RBTBckme1ETeSsUSxKnQ7ZwCol0meiguDtiVhGE4UKrh3E050E="
+
+git:
+  depth: false
 
 services:
   - docker
@@ -38,5 +46,5 @@ script:
   - coverage xml -i
 
 after_success:
-  - COVERALLS_REPO_TOKEN=E5ojynusVZalBYvI6sMT2HDuN1T2VVtLJ coveralls
+  - coveralls
   - sonar-scanner
