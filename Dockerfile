@@ -9,7 +9,7 @@ RUN mkdir ${OPTDIR}/${XQA}
 COPY src ${OPTDIR}/${XQA}
 COPY requirements.txt ${OPTDIR}/${XQA}
 
-RUN apt-get -qq install -y --no-install-recommends python3-pip python3-dev
+RUN apt-get -qq install -y python3-pip python3-dev
 
 RUN useradd -r -M -d ${OPTDIR}${XQA} xqa
 RUN chown -R xqa:xqa ${OPTDIR}${XQA}
